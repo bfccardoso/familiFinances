@@ -6,9 +6,9 @@ import Footer from '../components/footer'
 
 export default function MyApp({ Component, pageProps }) {
     return (
-        <div>
+        <div className='flex flex-col h-screen justify-between'>
             <Header />
-            <div className='container mx-auto max-h-full'>
+            <div className='container p-5 mx-auto'>
                 <Component {...pageProps} />
             </div>
             <Footer />
