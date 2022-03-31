@@ -8,7 +8,7 @@ const Input = ({...children}) => {
                 className='appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500'
                 {...children}
             />
-            {children.errorMessage && <p className="text-red-500 text-xs italic">{children.errorMessage}</p>}
+            {children.msg_error && <p className="text-red-500 text-xs italic">{children.msg_error}</p>}
         </div>
     )
 }

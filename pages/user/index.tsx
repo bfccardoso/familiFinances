@@ -1,14 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Input from '../../components/input'
 import { useFormik } from 'formik'
 import * as Yup from 'yup'
+import { useRouter } from 'next/router'
 
 const initialFormState = {
     name: '',
     email: '',
     renda: '',
-    porcentagem: '',
-    errorMessage: ''
+    porcentagem: ''
 }
 
 const UserSchema = Yup.object().shape({
@@ -19,16 +19,35 @@ const UserSchema = Yup.object().shape({
 })
 
 const User = () => {
+    const router = useRouter()
+    const [msgError, setMsgError] = useState('')
+
     const form = useFormik({
         initialValues: initialFormState,
         validationSchema: UserSchema,
-        onSubmit: values => {
-            console.log(values)
+        onSubmit: async values => {
+            try{
+                const resp = await fetch(`/api/user/create`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(values),
+                })
+                const {error} = await resp.json()
+                if(!error){
+                    router.push('/')
+                } else {
+                    setMsgError(error)
+                }
+            } catch(err) {
+                console.log(err)
+                setMsgError('Erro ao criar usuário.')
+            }
         }
     })
 
     return(
         <form className="flex flex-col space-y-2" onSubmit={form.handleSubmit}>
+            {msgError && <p className="text-red-500 text-center text-2xl">{msgError}</p>}
             <Input
                 label="Nome"
                 name="name"
@@ -36,7 +55,7 @@ const User = () => {
                 placeholder="Nome"
                 onChange={form.handleChange}
                 value={form.values.name}
-                errorMessage={form.errors.name}
+                msg_error={form.errors.name}
             />
             <Input
                 label="Email"
@@ -45,25 +64,25 @@ const User = () => {
                 placeholder="Email"
                 onChange={form.handleChange}
                 value={form.values.email}
-                errorMessage={form.errors.email}
+                msg_error={form.errors.email}
             />
             <Input
                 label="Renda"
                 name="renda"
-                type="text"
+                type="number"
                 placeholder="Renda"
                 onChange={form.handleChange}
                 value={form.values.renda}
-                errorMessage={form.errors.renda}
+                msg_error={form.errors.renda}
             />
             <Input
                 label="Porcentagem"
                 name="porcentagem"
-                type="text"
+                type="number"
                 placeholder="Porcentagem"
                 onChange={form.handleChange}
                 value={form.values.porcentagem}
-                errorMessage={form.errors.porcentagem}
+                msg_error={form.errors.porcentagem}
             />
             <button
                 type="submit"
